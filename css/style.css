@@ -1,0 +1,16 @@
+.main
+{
+    text-align: center;
+    color: white;
+
+}
+.how-to-use{
+    color: white;
+    text-align: center;
+}
+a {
+    color: red;
+}
+body {
+    background-color: black;
+}
