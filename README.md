@@ -1,0 +1,2 @@
+# autoposter
+Информация про AutoPoster
