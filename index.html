@@ -1,32 +1,299 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoPoster</title>
-    <link rel="icon" href="/icon.ico">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <div class="main">
-        <h1>Актуальная версия AutoPoster'а v0.2 от 02.06.05</h1>
-        Актуальная ссылка на загрузку: <a href="#" target="_blank">ссылка</a> <br />
-        Ссылка на Discord-сервер: <a href="https://discord.gg/Fzb4ggQTmk" target="_blank">ссылка</a>
-        <br><br>
+<html> 
+<head> 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+<script src="http://www.skulpt.org/js/skulpt.min.js" type="text/javascript"></script> 
+<script src="http://www.skulpt.org/js/skulpt-stdlib.js" type="text/javascript"></script> 
 
-        Актуальная цена обычной версии за месяц: 70₽
-    </div>
-    <br><br>
-    <br><br>
-    <div class="how-to-use">
-        Для успешного запуска программы нужно сделать пару шагов:
-        <table>
-            <li>Установить программу <a href="https://discord.gg" target="_blank">Discord</a></li>
-            <li>Вступить в <a href="https://discord.gg/Fzb4ggQTmk" target="_blank">Discord-сервер</a></li>
-            <li>Получить роль Покупателя на сервере</li>
-            <li>В специальном канале прописать команду для подтверждения владения</li>
-        </table>
-    </div>
-</body>
-</html>
+</head> 
+
+<body> 
+
+<script type="text/javascript"> 
+// output functions are configurable.  This one just appends some text
+// to a pre element.
+function outf(text) { 
+    var mypre = document.getElementById("output"); 
+    mypre.innerHTML = mypre.innerHTML + text; 
+} 
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+// Here's everything you need to run a python program in skulpt
+// grab the code from your textarea
+// get a reference to your pre element for output
+// configure the output function
+// call Sk.importMainWithBody()
+function runit() { 
+   var prog = document.getElementById("yourcode").value; 
+   var mypre = document.getElementById("output"); 
+   mypre.innerHTML = ''; 
+   Sk.pre = "output";
+   Sk.configure({output:outf, read:builtinRead}); 
+   (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+   var myPromise = Sk.misceval.asyncToPromise(function() {
+       return Sk.importMainWithBody("<stdin>", false, prog, true);
+   });
+   myPromise.then(function(mod) {
+       console.log('success');
+   },
+       function(err) {
+       console.log(err.toString());
+   });
+} 
+</script> 
+
+<h3>Try This</h3> 
+<form> 
+<textarea id="yourcode" cols="40" rows="10">import turtle
+
+# Name - полное имя машины (row[0])
+# Search - имя машины для поиска (row[1])
+# Speed - максимальная скорость (row[2])
+# TrunkKg - вместимость багажника (row[3])
+# Middle_Cost_NoFT - средняя цена на сервере (row[4])
+# Middle_Cost_FT - средняя цена на сервере (row[5])
+# Governement_Cost - цена в автосалоне (row[6])
+# Type - тип авто. 0 - сток, 1 - полуфт, 2 - фт (row[7])
+
+from mysql.connector import connect, Error
+import discord
+from discord.ext import commands
+from discord.ui import Button, View
+
+token_bot = "MTExMzc3OTc1MTE0OTEwOTM1MQ.Gu0iPA.mGNaPU8J2g20xyVKdbdzST7jQEOeakqirfRkGI"
+intents = discord.Intents.all()
+
+role_id_downtown =      1114866085234221126
+role_id_strawberry =    1114866094080020491
+role_id_vinewood =      1114866095585775646
+role_id_blackberry =    1114866096604983386
+role_id_insquad =       1114866097636790353
+role_id_sunrise =       1114866098341429249
+role_id_rainbow =       1114866099796848671
+role_id_richman =       1114866101516517486
+role_id_eclipse =       1114866102837706823
+role_id_la_mesa =       1114866107036225586
+role_id_burton =        1114866107992518757
+role_id_rockford =      1114866108999139368
+role_id_alta =          1114866109993201734
+role_id_del_perro =     1114866111335383071
+role_id_davis =         1114866272212111370
+role_id_harmony =       1114866273294229526
+
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+try:
+    with connect(
+        host="localhost",
+        user="root",
+        password="",
+    ) as connection:
+        cursor = connection.cursor()
+        print("success")
+        db_query = "USE `new`" # new - test BD.
+        cursor.execute(db_query)
+        #db_query = "SELECT * FROM cost_cars"
+        #cursor.execute(db_query)
+        #result = cursor.fetchall()
+        #for row in result:
+        #    print(row)
+except Error as e:
+    print("error")
+
+@bot.command()
+async def find_car(ctx, *car_name):
+    str(car_name).replace("'", "")
+    car_name.replace()
+    await ctx.send(f"Car: {list(car_name)}")
+
+@bot.command()
+async def test(ctx):
+
+    role_server_downtown = discord.utils.find(lambda r: r.name == 'DownTown', ctx.message.guild.roles)
+    role_server_strawberry = discord.utils.find(lambda r: r.name == 'Strawberry', ctx.message.guild.roles)
+    role_server_vinewood = discord.utils.find(lambda r: r.name == 'Vinewood', ctx.message.guild.roles)
+    role_server_blackberry = discord.utils.find(lambda r: r.name == 'Blackberry', ctx.message.guild.roles)
+    role_server_insquad = discord.utils.find(lambda r: r.name == 'Insquad', ctx.message.guild.roles)
+    role_server_sunrise = discord.utils.find(lambda r: r.name == 'Sunrise', ctx.message.guild.roles)
+    role_server_rainbow = discord.utils.find(lambda r: r.name == 'Rainbow', ctx.message.guild.roles)
+    role_server_richman = discord.utils.find(lambda r: r.name == 'Richman', ctx.message.guild.roles)
+    role_server_eclipse = discord.utils.find(lambda r: r.name == 'Eclipse', ctx.message.guild.roles)
+    role_server_la_mesa = discord.utils.find(lambda r: r.name == 'La Mesa', ctx.message.guild.roles)
+    role_server_burton = discord.utils.find(lambda r: r.name == 'Burton', ctx.message.guild.roles)
+    role_server_rockford = discord.utils.find(lambda r: r.name == 'Rockford', ctx.message.guild.roles)
+    role_server_alta = discord.utils.find(lambda r: r.name == 'Alta', ctx.message.guild.roles)
+    role_server_del_perro = discord.utils.find(lambda r: r.name == 'Del Perro', ctx.message.guild.roles)
+    role_server_davis = discord.utils.find(lambda r: r.name == 'Davis', ctx.message.guild.roles)
+    role_server_harmony = discord.utils.find(lambda r: r.name == 'Harmony', ctx.message.guild.roles)
+
+    ford_raptor = Button(label='Ford Raptor', style=discord.ButtonStyle.gray)
+    buggati_chiron = Button(label='Bugatti Chiron', style=discord.ButtonStyle.gray)
+
+    role_access = discord.utils.find(lambda r: r.name == 'access', ctx.message.guild.roles)
+
+    if role_access in ctx.author.roles:
+
+        if role_server_downtown in ctx.author.roles:
+            servert = "downtown"
+
+        elif role_server_strawberry in ctx.author.roles:
+            servert = "strawberry"
+    
+        elif role_server_vinewood in ctx.author.roles:
+            servert = "vinewood"
+    
+        elif role_server_blackberry in ctx.author.roles:
+            servert = "blackberry"
+    
+        elif role_server_insquad in ctx.author.roles:
+            servert = "insquad"    
+
+        elif role_server_sunrise in ctx.author.roles:
+            servert = "sunrise"  
+
+        elif role_server_rainbow in ctx.author.roles:
+            servert = "rainbow"   
+
+        elif role_server_richman in ctx.author.roles:
+            servert = "richman"  
+    
+        elif role_server_eclipse in ctx.author.roles:
+            servert = "eclipse" 
+
+        elif role_server_la_mesa in ctx.author.roles:
+            servert = "la_mesa"
+
+        elif role_server_burton in ctx.author.roles:
+            servert = "burton"
+
+        elif role_server_rockford in ctx.author.roles:
+            servert = "rockford" 
+
+        elif role_server_alta in ctx.author.roles:
+            servert = "alta" 
+
+        elif role_server_del_perro in ctx.author.roles:
+            servert = "del_perro" 
+    
+        elif role_server_davis in ctx.author.roles:
+            servert = "davis"
+
+        elif role_server_harmony in ctx.author.roles:
+            servert = "harmony"  
+        
+        print(servert)
+
+    async def ford_raptor_callback(interaction):
+        with connect(
+            host="localhost",
+            user="root",
+            password="",
+        ) as connection:
+            cursor = connection.cursor()
+            print("success")
+            db_query = f"USE `{servert}`" # new - test BD.
+            cursor.execute(db_query)
+            db_querys = f"SELECT * FROM cost_cars WHERE Search = 'ford_raptor'"
+            cursor.execute(db_querys)
+            results = cursor.fetchall()
+            for row in results:
+                embed = discord.Embed(
+                title="Ford Raptor Image",
+                color = 0xe100ff,
+                description = f"Ford Raptor")
+                embed.set_image(url=f'https://github.com/0def1x/autoposter/blob/main/ford_raptor.jpg')                         
+                await interaction.response.send_message(f"```\
+Наименование машины: {row[0]}\n\
+Максимальная скорость: {row[2]} км/ч\n\
+Вместимость багажника: {row[3]} кг\n\
+Средняя цена (без FT): ${row[4]}\n\
+Средняя цена (с FT): ${row[5]}\n\
+Государственная стоимость: ${row[6]}```", ephemeral=True, embed=embed)
+    
+    async def bugatti_chiron_callback(interaction):
+        with connect(
+            host="localhost",
+            user="root",
+            password="",
+        ) as connection:
+            cursor = connection.cursor()
+            print("success")
+            db_query = f"USE `{servert}`" # new - test BD.
+            cursor.execute(db_query)
+            db_querys = f"SELECT * FROM cost_cars WHERE Search = 'bugatti_chiron'"
+            cursor.execute(db_querys)
+            results = cursor.fetchall()
+            for row in results:
+                embed = discord.Embed(
+                title="Bugatti Chiron Image",
+                color = 0xe100ff,
+                description = f"Bugatti Chiron")
+                embed.set_image(url=f'https://github.com/0def1x/autoposter/blob/main/bugatti_chiron.jpg')               
+                await interaction.response.send_message(f"```\
+Наименование машины: {row[0]}\n\
+Максимальная скорость: {row[2]} км/ч\n\
+Вместимость багажника: {row[3]} кг\n\
+Средняя цена (без FT): ${row[4]}\n\
+Средняя цена (с FT): ${row[5]}\n\
+Государственная стоимость: ${row[6]}```", ephemeral=True, embed=embed)
+
+    ford_raptor.callback = ford_raptor_callback
+    buggati_chiron.callback = bugatti_chiron_callback
+
+    view = View()
+    view.add_item(ford_raptor)
+    view.add_item(buggati_chiron)
+
+    if role_access in ctx.author.roles:
+        await ctx.send("Выберите автомобиль", view=view)
+
+    await bot.wait_for("button_click")
+
+@bot.command()
+async def clear(ctx):
+    await ctx.channel.purge(limit=None)
+
+@bot.command()
+async def addcar(ctx, server_dostup, mark_car, mark_car_two, mark_find, cost_gos, cost_middle_noft, cost_middle_ft, trunk, speed):
+    try:
+        with connect(
+            host="localhost",
+            user="root",
+            password="",
+        ) as connection:
+            cursor = connection.cursor()
+            print("success")
+            db_query = f"USE `{server_dostup}`" # new - test BD.
+            cursor.execute(db_query)
+            db_query = f"INSERT INTO `cost_cars` (Name, Search, Speed, TrunkKg, Middle_Cost_NoFT, Middle_Cost_FT, Governement_Cost) VALUES ('{mark_car} {mark_car_two}', '{mark_find}', {speed}, {trunk}, {cost_middle_noft}, {cost_middle_ft}, {cost_gos})"
+            print(db_query)
+            cursor.execute(db_query)
+            connection.commit()
+    except Error as e:
+        await ctx.send("Ошибка добавления!")
+
+    await ctx.send(f"\
+Сервер: {server_dostup}\n\
+Авто: {mark_car} {mark_car_two}\n\
+Ключевое слово авто: {mark_find}\n\
+Стоимость в автосалоне: {cost_gos}\n\
+Средняя стоимость (без FT): {cost_middle_noft}\n\
+Средняя стоимость (с FT): {cost_middle_ft}\n\
+Вместительность багажника: {trunk}\n\
+Скорость: {speed}")
+bot.run(token_bot)
+    
+</textarea><br /> 
+<button type="button" onclick="runit()">Run</button> 
+</form> 
+<pre id="output" ></pre> 
+<!-- If you want turtle graphics include a canvas -->
+<div id="mycanvas"></div> 
+
+</body> 
+
+</html> 
